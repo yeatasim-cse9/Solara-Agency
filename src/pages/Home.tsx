@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Play, ArrowRight, X, Check, ChevronDown, Star, Maximize, Volume2, Settings, Target, DollarSign } from 'lucide-react';
-import { motion } from 'motion/react';
+import { motion, useScroll, useTransform } from 'motion/react';
 
 const FunnelAuditIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 430 430" width="64" height="64" preserveAspectRatio="xMidYMid slice" style={{ width: '100%', height: '100%', transform: 'translate3d(0px, 0px, 0px)' }}>
@@ -40,25 +40,50 @@ const FunnelAuditIcon = () => (
 );
 
 const CampaignSetupIcon = () => (
-  <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <motion.rect x="12" y="16" width="40" height="32" rx="4" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }} />
-    <motion.path d="M12 24H52" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }} />
-    <motion.circle cx="18" cy="20" r="1" fill="white" />
-    <motion.circle cx="22" cy="20" r="1" fill="white" />
-    <motion.circle cx="26" cy="20" r="1" fill="white" />
-    <motion.path d="M32 40C35.3137 40 38 37.3137 38 34C38 30.6863 35.3137 28 32 28C28.6863 28 26 30.6863 26 34C26 37.3137 28.6863 40 32 40Z" stroke="#ff4f38" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" initial={{ pathLength: 0, rotate: 0 }} animate={{ pathLength: 1, rotate: 180 }} transition={{ duration: 3, repeat: Infinity, ease: "linear" }} style={{ originX: "32px", originY: "34px" }} />
-    <motion.path d="M32 24V26M32 42V44M42 34H40M24 34H22M39.0711 26.9289L37.6569 28.3431M26.3431 39.6569L24.9289 41.0711M39.0711 41.0711L37.6569 39.6569M26.3431 28.3431L24.9289 26.9289" stroke="#ff4f38" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 2, repeat: Infinity, ease: "easeInOut", delay: 1 }} />
-  </svg>
+  <div className="relative w-[64px] h-[64px] flex items-center justify-center">
+    {/* Background gears */}
+    <div className="absolute z-0">
+      <Settings size={44} className="text-white/10" strokeWidth={1.5} />
+    </div>
+    <div className="absolute right-1 bottom-1 z-0">
+      <Settings size={30} className="text-brand-red/20" strokeWidth={2} />
+    </div>
+    
+    {/* Main Laptop */}
+    <div className="absolute z-10 drop-shadow-2xl">
+      <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-white">
+        <rect x="2" y="3" width="20" height="14" rx="2" fill="#0a0a0a" />
+        <line x1="8" y1="21" x2="16" y2="21" />
+        <line x1="12" y1="17" x2="12" y2="21" />
+      </svg>
+    </div>
+    
+    {/* Static red elements */}
+    <div className="absolute right-3 top-2 text-brand-red z-20 drop-shadow-[0_0_8px_rgba(255,79,56,0.6)]">
+      <Target size={18} strokeWidth={2.5} />
+    </div>
+  </div>
 );
 
 const MaximizeProfitIcon = () => (
-  <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <motion.path d="M32 50C40.8366 50 48 44.6274 48 38C48 31.3726 40 24 32 24C24 24 16 31.3726 16 38C16 44.6274 23.1634 50 32 50Z" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }} />
-    <motion.path d="M26 16C26 16 28 24 32 24C36 24 38 16 38 16C38 16 34 14 32 14C30 14 26 16 26 16Z" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }} />
-    <motion.path d="M32 28V46" stroke="#ff4f38" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 2, repeat: Infinity, ease: "easeInOut", delay: 0.5 }} />
-    <motion.path d="M36 32C36 30.8954 35.1046 30 34 30H30C28.8954 30 28 30.8954 28 32C28 33.1046 28.8954 34 30 34H34C35.1046 34 36 34.8954 36 36C36 37.1046 35.1046 38 34 38H30C28.8954 38 28 37.1046 28 36" stroke="#ff4f38" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 2, repeat: Infinity, ease: "easeInOut", delay: 0.5 }} />
-    <motion.path d="M24 22C24 22 28 20 32 20C36 20 40 22 40 22" stroke="#ff4f38" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 2, repeat: Infinity, ease: "easeInOut", delay: 1 }} />
-  </svg>
+  <div className="relative w-[64px] h-[64px] flex items-end justify-center pb-2">
+    <div className="flex items-end gap-2.5 h-12 w-full justify-center">
+      <div className="w-3.5 h-[50%] bg-white/10 rounded-t-sm" />
+      <div className="w-3.5 h-[70%] bg-white/30 rounded-t-sm" />
+      <div className="w-3.5 h-[90%] bg-brand-red rounded-t-sm relative shadow-[0_0_15px_rgba(255,79,56,0.4)]">
+        <div className="absolute -top-7 left-1/2 -translate-x-1/2 text-white">
+          <DollarSign size={16} strokeWidth={3} />
+        </div>
+      </div>
+    </div>
+    
+    <div className="absolute -top-1 -right-2 text-brand-red">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="drop-shadow-[0_0_10px_rgba(255,79,56,0.5)]">
+        <line x1="7" y1="17" x2="17" y2="7" />
+        <polyline points="7 7 17 7 17 17" />
+      </svg>
+    </div>
+  </div>
 );
 
 const Tag = ({ children }: { children: React.ReactNode }) => (
@@ -101,6 +126,38 @@ const SectionHeader = ({ tag, title, subtitle }: { tag?: string, title: React.Re
     )}
   </div>
 );
+
+const ScrollRevealText = ({ text }: { text: string }) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start 85%", "end 50%"]
+  });
+
+  const words = text.split(" ");
+  return (
+    <div ref={containerRef} className="mb-12 cursor-default">
+      <h2 className="text-4xl md:text-5xl lg:text-[56px] font-medium leading-[1.2] tracking-tight text-white flex flex-wrap justify-center">
+        {words.map((word, i) => {
+          const start = i / words.length;
+          const end = start + 1 / words.length;
+          const opacity = useTransform(scrollYProgress, [start, end], [0.15, 1]);
+          const y = useTransform(scrollYProgress, [start, end], [10, 0]);
+          const filter = useTransform(scrollYProgress, [start, end], ['blur(4px)', 'blur(0px)']);
+          return (
+            <motion.span 
+              key={i} 
+              style={{ opacity, y, filter }}
+              className="inline-block mr-[0.25em] mb-2"
+            >
+              {word}
+            </motion.span>
+          );
+        })}
+      </h2>
+    </div>
+  );
+};
 
 export default function Home() {
   const [openFaq, setOpenFaq] = useState<number | null>(0);
@@ -246,10 +303,10 @@ export default function Home() {
                   </button>
                 </div>
                 <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between text-xs font-medium">
-                  <div className="flex items-center gap-2 bg-black/50 backdrop-blur-md px-3 py-1.5 rounded-full">
+                  <div className="flex items-center gap-2 bg-black/50 backdrop-blur-md transform-gpu px-3 py-1.5 rounded-full shadow-sm shadow-black/20">
                     <Play className="w-3 h-3 fill-current" /> 00:00
                   </div>
-                  <div className="flex items-center gap-2 bg-black/50 backdrop-blur-md px-3 py-1.5 rounded-full">
+                  <div className="flex items-center gap-2 bg-black/50 backdrop-blur-md transform-gpu px-3 py-1.5 rounded-full shadow-sm shadow-black/20">
                     <Volume2 className="w-3 h-3" />
                     <Settings className="w-3 h-3" />
                     <Maximize className="w-3 h-3" />
@@ -272,15 +329,7 @@ export default function Home() {
       {/* Banner */}
       <section className="py-32 relative flex justify-center bg-black">
         <div className="w-[90%] max-w-6xl mx-auto text-center relative z-10">
-          <motion.h2 
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-            className="text-4xl md:text-5xl lg:text-[56px] font-medium leading-[1.2] tracking-tight text-white mb-12 blur-md hover:blur-none transition-all duration-500 cursor-default"
-          >
-            Here at Solara, we focus on returns. We're dedicated to scaling your brand with paid advertising. Break free and take your brand to next level.
-          </motion.h2>
+          <ScrollRevealText text="Here at Solara, we focus on returns. We're dedicated to scaling your brand with paid advertising. Break free and take your brand to next level." />
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -311,37 +360,37 @@ export default function Home() {
           ].map((result, i) => (
             <motion.div 
               key={i} 
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, y: 50, scale: 0.95 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
               viewport={{ once: true, margin: "-50px" }}
-              transition={{ duration: 0.6, delay: i * 0.2 }}
-              className="relative rounded-[2.5rem] overflow-hidden group aspect-[3/4] sm:aspect-[4/5] border border-white/10 bg-[#0a0a0a] shadow-2xl"
+              transition={{ duration: 0.7, delay: i * 0.15, type: "spring", bounce: 0.4 }}
+              className="relative rounded-[2.5rem] overflow-hidden group aspect-[3/4] sm:aspect-[4/5] border border-white/5 bg-[#0a0a0a] shadow-[0_0_0_1px_rgba(255,255,255,0.05)] hover:shadow-[0_0_40px_rgba(255,79,56,0.15)] hover:border-brand-red/30 transition-all duration-700"
             >
-              <img src={`https://picsum.photos/seed/${result.seed}/600/800`} alt={result.brand} className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000 opacity-80 group-hover:opacity-100" referrerPolicy="no-referrer" />
+              <img src={`https://picsum.photos/seed/${result.seed}/600/800`} alt={result.brand} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000 opacity-70 group-hover:opacity-90" referrerPolicy="no-referrer" />
               
               {/* Enhanced Gradients */}
-              <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-[#0a0a0a]/80 via-40% to-transparent opacity-90" />
-              <div className="absolute inset-0 bg-gradient-to-b from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 via-40% to-transparent opacity-95 transition-opacity duration-700" />
+              <div className="absolute inset-0 bg-gradient-to-t from-brand-red/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
               
               {/* Hover Glow Effect */}
-              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none">
-                <div className="absolute -bottom-20 -right-20 w-64 h-64 bg-brand-red/20 blur-[80px] rounded-full" />
-                <div className="absolute -top-20 -left-20 w-64 h-64 bg-brand-red/10 blur-[80px] rounded-full" />
+              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-all duration-700 pointer-events-none">
+                <div className="absolute -bottom-32 -right-32 w-80 h-80 bg-brand-red/30 blur-[100px] rounded-full" />
+                <div className="absolute -top-32 -left-32 w-80 h-80 bg-brand-red/10 blur-[100px] rounded-full" />
               </div>
 
               <div className="absolute inset-0 p-8 flex flex-col justify-end">
                 <motion.div 
                   initial={{ y: 20, opacity: 0 }}
                   whileInView={{ y: 0, opacity: 1 }}
-                  transition={{ duration: 0.5, delay: 0.3 }}
+                  transition={{ duration: 0.5, delay: 0.4 + (i * 0.1) }}
                   className="flex flex-col items-center text-center relative z-10"
                 >
-                  <h3 className="text-4xl sm:text-5xl font-medium tracking-tight mb-4 text-white drop-shadow-lg">{result.brand}</h3>
-                  <p className="text-lg sm:text-xl text-white/90 mb-8 font-light leading-relaxed">{result.stat}</p>
+                  <h3 className="text-4xl sm:text-5xl font-medium tracking-tight mb-3 text-white drop-shadow-lg group-hover:-translate-y-2 transition-transform duration-500">{result.brand}</h3>
+                  <p className="text-lg sm:text-xl text-brand-text-gray mb-8 font-light leading-relaxed group-hover:-translate-y-2 transition-transform duration-500 delay-75">{result.stat}</p>
                   
-                  <div className="flex flex-row flex-wrap items-center justify-center gap-2 sm:gap-3 w-full">
+                  <div className="flex flex-row flex-wrap items-center justify-center gap-3 w-full group-hover:-translate-y-2 transition-transform duration-500 delay-100">
                     {result.metrics.map((metric, j) => (
-                      <div key={j} className="border border-white/20 bg-black/50 backdrop-blur-xl px-3 sm:px-5 py-2 sm:py-3 rounded-2xl text-xs sm:text-sm font-medium text-white/95 shadow-[0_4px_20px_rgba(0,0,0,0.3)] group-hover:border-brand-red/30 transition-colors duration-500">
+                      <div key={j} className="border border-white/10 bg-white/5 backdrop-blur-xl px-4 py-2 sm:py-2.5 rounded-2xl text-[13px] sm:text-sm font-medium text-white shadow-xl hover:border-brand-red/50 hover:bg-white/10 transition-colors duration-300">
                         {metric}
                       </div>
                     ))}
@@ -395,9 +444,15 @@ export default function Home() {
         
         <div className="w-[90%] max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 mt-16">
           {/* Other Agencies Column */}
-          <div className="flex flex-col">
+          <motion.div 
+            initial={{ opacity: 0, x: -30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, margin: "-50px" }}
+            transition={{ type: "spring", stiffness: 80, delay: 0.1 }}
+            className="flex flex-col"
+          >
             <h3 className="text-2xl font-medium text-brand-text-gray mb-6 text-center">Other Agencies</h3>
-            <div className="bg-[#111] rounded-[2rem] p-10 border border-white/5 flex-1 transition-transform duration-500 hover:scale-[1.02] hover:border-white/10">
+            <div className="bg-[#0a0a0a] rounded-[2rem] p-10 border border-white/5 flex-1 transition-all duration-500 hover:-translate-y-2 hover:border-white/10 hover:shadow-2xl">
               <ul className="space-y-6">
                 {[
                   "Slow communication",
@@ -413,18 +468,24 @@ export default function Home() {
                 ))}
               </ul>
             </div>
-          </div>
+          </motion.div>
           
           {/* Solara Column */}
-          <div className="flex flex-col">
+          <motion.div 
+            initial={{ opacity: 0, x: 30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, margin: "-50px" }}
+            transition={{ type: "spring", stiffness: 80, delay: 0.2 }}
+            className="flex flex-col"
+          >
             <div className="flex justify-center mb-6 h-8 items-center">
               <div className="flex items-center gap-2 text-2xl font-bold tracking-tight">
                 <div className="w-6 h-6 bg-white rounded-full flex items-center justify-center"><div className="w-2 h-2 bg-brand-dark rounded-full" /></div>
                 solara
               </div>
             </div>
-            <div className="bg-[#111] rounded-[2rem] p-10 border border-white/5 flex-1 relative overflow-hidden transition-transform duration-500 hover:scale-[1.02] hover:border-brand-red/30">
-              <div className="absolute top-0 right-0 w-64 h-full bg-gradient-to-l from-brand-red/20 via-brand-red/5 to-transparent pointer-events-none blur-2xl" />
+            <div className="bg-[#0a0a0a] rounded-[2rem] p-10 border border-brand-red/20 flex-1 relative overflow-hidden transition-all duration-500 hover:-translate-y-2 hover:border-brand-red/50 hover:shadow-[0_20px_40px_rgba(255,79,56,0.15)] group">
+              <div className="absolute top-0 right-0 w-64 h-full bg-gradient-to-l from-brand-red/20 via-brand-red/5 to-transparent pointer-events-none blur-2xl group-hover:from-brand-red/30 transition-colors duration-500" />
               <div className="relative z-10">
                 <ul className="space-y-6">
                   {[
@@ -442,7 +503,7 @@ export default function Home() {
                 </ul>
               </div>
             </div>
-          </div>
+          </motion.div>
         </div>
       </section>
 
@@ -460,13 +521,20 @@ export default function Home() {
             { icon: CampaignSetupIcon, title: "Campaign Setup", desc: "Then, with your business goals in mind, we will set up the advertising campaigns." },
             { icon: MaximizeProfitIcon, title: "Maximize Profit", desc: "We'll then work towards driving the cost per action down to maximize profit." }
           ].map((step, i) => (
-            <div key={i} className="flex flex-col items-center">
+            <motion.div 
+              key={i} 
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ duration: 0.6, delay: i * 0.2, type: "spring", stiffness: 80 }}
+              className="flex flex-col items-center bg-[#0a0a0a] p-10 rounded-[2rem] border border-white/5 hover:border-brand-red/30 transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_10px_30px_rgba(255,79,56,0.1)]"
+            >
               <div className="mb-6">
                 <step.icon />
               </div>
               <h3 className="text-2xl font-medium mb-4">{step.title}</h3>
               <p className="text-brand-text-gray">{step.desc}</p>
-            </div>
+            </motion.div>
           ))}
         </div>
       </section>
@@ -487,16 +555,23 @@ export default function Home() {
             { quote: "Solara exceeded our expectations! Their approach to paid advertising is unparalleled, resulting in a substantial growth in our revenue stream.", name: "Belinda Meyers", role: "COO of Friday", seed: "w3" },
             { quote: "Thanks to Solara, our business experienced a remarkable turnaround. Their expertise in paid advertising tripled our revenue in record time.", name: "Sarah Yanna", role: "Director of Saturday", seed: "w4" }
           ].map((t, i) => (
-            <div key={i} className="bg-brand-gray rounded-3xl p-8 border border-white/5 flex flex-col">
-              <p className="text-brand-text-gray mb-8 flex-grow">"{t.quote}"</p>
+            <motion.div 
+              key={i} 
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ duration: 0.6, delay: i * 0.1, type: "spring", stiffness: 80 }}
+              className="bg-[#111] rounded-3xl p-8 border border-white/5 hover:border-white/10 transition-all duration-300 flex flex-col group hover:-translate-y-1 hover:shadow-2xl"
+            >
+              <p className="text-brand-text-gray mb-8 flex-grow transition-colors group-hover:text-white/90">"{t.quote}"</p>
               <div className="flex items-center gap-4">
-                <img src={`https://picsum.photos/seed/${t.seed}/100/100`} alt={t.name} className="w-12 h-12 rounded-full object-cover" referrerPolicy="no-referrer" />
+                <img src={`https://picsum.photos/seed/${t.seed}/100/100`} alt={t.name} className="w-12 h-12 rounded-full object-cover ring-2 ring-transparent group-hover:ring-brand-red/40 transition-all duration-300" referrerPolicy="no-referrer" />
                 <div>
-                  <div className="font-medium">{t.name}</div>
+                  <div className="font-medium text-white/95">{t.name}</div>
                   <div className="text-sm text-brand-text-gray">{t.role}</div>
                 </div>
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
       </section>
@@ -513,8 +588,8 @@ export default function Home() {
           Book a 15-min call <ArrowRight className="w-4 h-4" />
         </button>
 
-        <div className="w-full overflow-hidden relative group/marquee">
-          <div className="flex w-max animate-marquee-team group-hover/marquee:[animation-play-state:paused]">
+        <div className="w-full overflow-hidden relative pb-10">
+          <div className="flex w-max animate-marquee-team hover:[animation-play-state:paused] active:[animation-play-state:paused]">
             {[...Array(2)].map((_, arrayIndex) => (
               <div key={arrayIndex} className="flex gap-6 pr-6">
                 {[

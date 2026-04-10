@@ -1,43 +1,57 @@
-import React from 'react';
+import React, { Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import ScrollToTop from './components/ScrollToTop';
 import Layout from './components/Layout';
-import Home from './pages/Home';
-import About from './pages/About';
-import Blog from './pages/Blog';
-import Article from './pages/Article';
-import Services from './pages/Services';
-import Process from './pages/Process';
-import ComingSoon from './pages/ComingSoon';
-import Legal from './pages/Legal';
-import NotFound from './pages/NotFound';
-import Pricing from './pages/Pricing';
-import BookACall from './pages/BookACall';
-import FAQ from './pages/FAQ';
-import Contact from './pages/Contact';
+import { ErrorBoundary } from './components/ErrorBoundary';
+
+// Lazy loading all routes for code splitting and payload reduction
+const Home = lazy(() => import('./pages/Home'));
+const About = lazy(() => import('./pages/About'));
+const Blog = lazy(() => import('./pages/Blog'));
+const Article = lazy(() => import('./pages/Article'));
+const Services = lazy(() => import('./pages/Services'));
+const Process = lazy(() => import('./pages/Process'));
+const ComingSoon = lazy(() => import('./pages/ComingSoon'));
+const Legal = lazy(() => import('./pages/Legal'));
+const NotFound = lazy(() => import('./pages/NotFound'));
+const Pricing = lazy(() => import('./pages/Pricing'));
+const BookACall = lazy(() => import('./pages/BookACall'));
+const FAQ = lazy(() => import('./pages/FAQ'));
+const Contact = lazy(() => import('./pages/Contact'));
+
+// Loading fallback component
+const PageLoader = () => (
+  <div className="min-h-screen flex items-center justify-center bg-brand-dark">
+    <div className="w-8 h-8 rounded-full border-4 border-white/10 border-t-brand-red animate-spin" />
+  </div>
+);
 
 export default function App() {
   return (
-    <Router>
-      <ScrollToTop />
-      <Routes>
-        <Route path="/" element={<Layout />}>
-          <Route index element={<Home />} />
-          <Route path="about" element={<About />} />
-          <Route path="blog" element={<Blog />} />
-          <Route path="blog/:slug" element={<Article />} />
-          <Route path="services" element={<Services />} />
-          <Route path="process" element={<Process />} />
-          <Route path="pricing" element={<Pricing />} />
-          <Route path="book-a-call" element={<BookACall />} />
-          <Route path="faq" element={<FAQ />} />
-          <Route path="contact" element={<Contact />} />
-          <Route path="coming-soon" element={<ComingSoon />} />
-          <Route path="legal" element={<Legal />} />
-          <Route path="404" element={<NotFound />} />
-          <Route path="*" element={<NotFound />} />
-        </Route>
-      </Routes>
-    </Router>
+    <ErrorBoundary>
+      <Router>
+        <ScrollToTop />
+        <Suspense fallback={<PageLoader />}>
+          <Routes>
+            <Route path="/" element={<Layout />}>
+              <Route index element={<Home />} />
+              <Route path="about" element={<About />} />
+              <Route path="blog" element={<Blog />} />
+              <Route path="blog/:slug" element={<Article />} />
+              <Route path="services" element={<Services />} />
+              <Route path="process" element={<Process />} />
+              <Route path="pricing" element={<Pricing />} />
+              <Route path="book-a-call" element={<BookACall />} />
+              <Route path="faq" element={<FAQ />} />
+              <Route path="contact" element={<Contact />} />
+              <Route path="coming-soon" element={<ComingSoon />} />
+              <Route path="legal" element={<Legal />} />
+              <Route path="404" element={<NotFound />} />
+              <Route path="*" element={<NotFound />} />
+            </Route>
+          </Routes>
+        </Suspense>
+      </Router>
+    </ErrorBoundary>
   );
 }

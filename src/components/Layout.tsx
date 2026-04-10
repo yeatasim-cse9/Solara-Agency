@@ -1,28 +1,135 @@
-import React from 'react';
-import { Outlet, Link } from 'react-router-dom';
-import { ChevronDown, Twitter, Instagram, Linkedin, ArrowRight } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Outlet, Link, useLocation } from 'react-router-dom';
+import { ChevronDown, Twitter, Instagram, Linkedin, ArrowRight, Menu, X } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
 
 export default function Layout() {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const location = useLocation();
+
+  // Close mobile menu on route change
+  useEffect(() => {
+    setIsMobileMenuOpen(false);
+  }, [location.pathname]);
+
+  // Memory leak prevention/cleanup for body styles
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isMobileMenuOpen]);
+
   return (
     <div className="min-h-screen bg-brand-dark text-white font-sans selection:bg-brand-red/30 overflow-x-hidden flex flex-col">
       {/* Navbar */}
       <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-center p-4">
-        <div className="flex items-center justify-between w-[90%] max-w-7xl bg-white/5 backdrop-blur-md border border-white/10 rounded-xl px-6 py-3">
+        <div className="flex items-center justify-between w-[95%] md:w-[90%] max-w-7xl bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl px-4 md:px-6 py-3">
           <div className="flex items-center gap-2">
-            <Link to="/" className="text-xl font-bold tracking-tight">solara</Link>
+            <Link to="/" className="text-xl font-bold tracking-tight py-2">solara</Link>
           </div>
+          
+          {/* Desktop Menu */}
           <div className="hidden md:flex items-center gap-6 text-sm font-medium text-white/80">
-            <Link to="/about" className="hover:text-white transition-colors">About</Link>
-            <Link to="/blog" className="hover:text-white transition-colors">Blog</Link>
-            <Link to="/services" className="hover:text-white transition-colors">Services</Link>
-            <Link to="/process" className="hover:text-white transition-colors">Process</Link>
-            <Link to="/pricing" className="hover:text-white transition-colors">Pricing</Link>
+            <Link to="/about" className="hover:text-white transition-colors py-2">About</Link>
+            <Link to="/blog" className="hover:text-white transition-colors py-2">Blog</Link>
+            <Link to="/services" className="hover:text-white transition-colors py-2">Services</Link>
+            <Link to="/process" className="hover:text-white transition-colors py-2">Process</Link>
+            <Link to="/pricing" className="hover:text-white transition-colors py-2">Pricing</Link>
           </div>
-          <Link to="/book-a-call" className="bg-brand-red hover:bg-red-500 text-white px-6 py-2 rounded-xl text-sm font-medium transition-colors">
-            Book a call
-          </Link>
+          
+          <div className="hidden md:block">
+            <Link to="/book-a-call" className="bg-brand-red hover:bg-red-500 text-white px-6 py-2.5 rounded-xl text-sm font-medium transition-colors">
+              Book a call
+            </Link>
+          </div>
+
+          {/* Mobile Menu Toggle */}
+          <button 
+            className="md:hidden flex items-center justify-center w-12 h-12 rounded-xl bg-white/5 active:bg-white/10 transition-colors"
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            aria-label="Toggle menu"
+          >
+            <AnimatePresence mode="wait" initial={false}>
+              <motion.div
+                key={isMobileMenuOpen ? 'close' : 'open'}
+                initial={{ opacity: 0, rotate: -90 }}
+                animate={{ opacity: 1, rotate: 0 }}
+                exit={{ opacity: 0, rotate: 90 }}
+                transition={{ duration: 0.2 }}
+              >
+                {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              </motion.div>
+            </AnimatePresence>
+          </button>
         </div>
       </nav>
+
+      {/* Mobile Menu Overlay */}
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <motion.div 
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "100vh" }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+            className="fixed inset-0 top-0 z-40 bg-brand-dark/95 backdrop-blur-xl pt-28 pb-8 px-6 flex flex-col md:hidden overflow-hidden"
+          >
+            <motion.div 
+              initial="hidden"
+              animate="visible"
+              exit="hidden"
+              variants={{
+                visible: { transition: { staggerChildren: 0.1, delayChildren: 0.2 } },
+                hidden: { transition: { staggerChildren: 0.05, staggerDirection: -1 } }
+              }}
+              className="flex flex-col gap-4 text-2xl font-medium mt-4"
+            >
+              {[
+                { name: 'About', path: '/about' },
+                { name: 'Blog', path: '/blog' },
+                { name: 'Services', path: '/services' },
+                { name: 'Process', path: '/process' },
+                { name: 'Pricing', path: '/pricing' },
+              ].map((link, i) => (
+                <motion.div 
+                  key={i}
+                  variants={{
+                    hidden: { opacity: 0, x: -20 },
+                    visible: { opacity: 1, x: 0, transition: { type: "spring", stiffness: 100 } }
+                  }}
+                >
+                  <Link 
+                    to={link.path} 
+                    className="block py-4 border-b border-white/10 hover:text-brand-red transition-colors"
+                  >
+                    {link.name}
+                  </Link>
+                </motion.div>
+              ))}
+            </motion.div>
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 20 }}
+              transition={{ delay: 0.4, duration: 0.3 }}
+              className="mt-auto pb-4"
+            >
+              <Link 
+                to="/book-a-call" 
+                className="w-full flex items-center justify-center bg-brand-red hover:bg-red-500 text-white px-6 py-4 rounded-xl font-medium transition-colors text-lg"
+              >
+                Book a call
+              </Link>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Main Content */}
       <main className="flex-grow">
@@ -51,7 +158,7 @@ export default function Layout() {
                 <input 
                   type="email" 
                   placeholder="Your Email Address" 
-                  className="bg-white/5 border border-white/10 rounded-full pl-6 pr-36 py-4 text-sm w-full focus:outline-none focus:border-brand-red/50 transition-all focus:bg-white/10"
+                  className="bg-white/5 border border-white/10 rounded-full pl-6 pr-36 py-4 text-sm w-full focus:outline-none focus:border-brand-red/50 transition-all focus:bg-white/10 h-14"
                 />
                 <button className="absolute right-2 top-2 bottom-2 bg-brand-red hover:bg-red-500 text-white px-6 rounded-full text-sm font-medium transition-colors flex items-center gap-2 group">
                   Subscribe <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -59,41 +166,41 @@ export default function Layout() {
               </div>
             </div>
             
-            <div className="flex flex-wrap gap-16 lg:gap-24">
+            <div className="flex flex-wrap gap-12 lg:gap-24">
               <div>
-                <h4 className="font-medium mb-6 text-white">Pages</h4>
+                <h4 className="font-medium mb-6 text-white text-lg">Pages</h4>
                 <ul className="space-y-4 text-brand-text-gray">
-                  <li><Link to="/about" className="hover:text-white hover:translate-x-1 transition-all inline-block">About</Link></li>
-                  <li><Link to="/blog" className="hover:text-white hover:translate-x-1 transition-all inline-block">Blog</Link></li>
-                  <li><Link to="/services" className="hover:text-white hover:translate-x-1 transition-all inline-block">Services</Link></li>
-                  <li><Link to="/process" className="hover:text-white hover:translate-x-1 transition-all inline-block">Process</Link></li>
-                  <li><Link to="/pricing" className="hover:text-white hover:translate-x-1 transition-all inline-block">Pricing</Link></li>
+                  <li><Link to="/about" className="hover:text-white hover:translate-x-1 transition-all inline-block py-1">About</Link></li>
+                  <li><Link to="/blog" className="hover:text-white hover:translate-x-1 transition-all inline-block py-1">Blog</Link></li>
+                  <li><Link to="/services" className="hover:text-white hover:translate-x-1 transition-all inline-block py-1">Services</Link></li>
+                  <li><Link to="/process" className="hover:text-white hover:translate-x-1 transition-all inline-block py-1">Process</Link></li>
+                  <li><Link to="/pricing" className="hover:text-white hover:translate-x-1 transition-all inline-block py-1">Pricing</Link></li>
                 </ul>
               </div>
               <div>
-                <h4 className="font-medium mb-6 text-white">Information</h4>
+                <h4 className="font-medium mb-6 text-white text-lg">Information</h4>
                 <ul className="space-y-4 text-brand-text-gray">
-                  <li><Link to="/faq" className="hover:text-white hover:translate-x-1 transition-all inline-block">FAQ</Link></li>
-                  <li><Link to="/contact" className="hover:text-white hover:translate-x-1 transition-all inline-block">Contact</Link></li>
-                  <li><Link to="/legal" className="hover:text-white hover:translate-x-1 transition-all inline-block">Legal</Link></li>
-                  <li><Link to="/coming-soon" className="hover:text-white hover:translate-x-1 transition-all inline-block">Coming Soon</Link></li>
+                  <li><Link to="/faq" className="hover:text-white hover:translate-x-1 transition-all inline-block py-1">FAQ</Link></li>
+                  <li><Link to="/contact" className="hover:text-white hover:translate-x-1 transition-all inline-block py-1">Contact</Link></li>
+                  <li><Link to="/legal" className="hover:text-white hover:translate-x-1 transition-all inline-block py-1">Legal</Link></li>
+                  <li><Link to="/coming-soon" className="hover:text-white hover:translate-x-1 transition-all inline-block py-1">Coming Soon</Link></li>
                 </ul>
               </div>
               <div>
-                <h4 className="font-medium mb-6 text-white">Socials</h4>
+                <h4 className="font-medium mb-6 text-white text-lg">Socials</h4>
                 <ul className="space-y-4 text-brand-text-gray">
                   <li>
-                    <a href="#" className="flex items-center gap-2 hover:text-white hover:translate-x-1 transition-all">
+                    <a href="#" className="flex items-center gap-2 hover:text-white hover:translate-x-1 transition-all py-1">
                       <Twitter className="w-4 h-4" /> Twitter
                     </a>
                   </li>
                   <li>
-                    <a href="#" className="flex items-center gap-2 hover:text-white hover:translate-x-1 transition-all">
+                    <a href="#" className="flex items-center gap-2 hover:text-white hover:translate-x-1 transition-all py-1">
                       <Linkedin className="w-4 h-4" /> LinkedIn
                     </a>
                   </li>
                   <li>
-                    <a href="#" className="flex items-center gap-2 hover:text-white hover:translate-x-1 transition-all">
+                    <a href="#" className="flex items-center gap-2 hover:text-white hover:translate-x-1 transition-all py-1">
                       <Instagram className="w-4 h-4" /> Instagram
                     </a>
                   </li>

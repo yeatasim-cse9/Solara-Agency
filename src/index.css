@@ -11,9 +11,15 @@
   --color-brand-text-gray: #a3a3a3;
 }
 
+html {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
 body {
   background-color: var(--color-brand-dark);
   color: white;
+  overscroll-behavior-y: none;
 }
 
 @keyframes marquee {

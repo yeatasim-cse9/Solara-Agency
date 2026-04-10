@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'motion/react';
 import { Target, TrendingUp, Users, Zap, ArrowRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const services = [
   {
@@ -59,9 +60,9 @@ export default function Services() {
             <p className="text-brand-text-gray leading-relaxed mb-8">
               {service.description}
             </p>
-            <button className="text-white font-medium flex items-center gap-2 hover:text-brand-red transition-colors">
+            <Link to="/contact" className="text-white font-medium flex items-center gap-2 hover:text-brand-red transition-colors">
               Learn more <ArrowRight className="w-4 h-4" />
-            </button>
+            </Link>
           </motion.div>
         ))}
       </div>
