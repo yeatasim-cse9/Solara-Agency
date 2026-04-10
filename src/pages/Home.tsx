@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { Play, ArrowRight, X, Check, ChevronDown, Star, Maximize, Volume2, Settings, Target, DollarSign } from 'lucide-react';
 import { motion, useScroll, useTransform } from 'motion/react';
+import { Link } from 'react-router-dom';
 
 const FunnelAuditIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 430 430" width="64" height="64" preserveAspectRatio="xMidYMid slice" style={{ width: '100%', height: '100%', transform: 'translate3d(0px, 0px, 0px)' }}>
@@ -235,9 +236,9 @@ export default function Home() {
                 Book a call
               </button>
               <div className="relative w-full sm:w-auto">
-                <button className="bg-[#111] hover:bg-[#222] border border-white/10 text-white px-8 py-3.5 rounded-xl font-medium transition-colors w-full sm:w-auto relative z-10">
+                <Link to="/services" className="bg-[#111] hover:bg-[#222] border border-white/10 text-white px-8 py-3.5 rounded-xl font-medium transition-colors w-full sm:w-auto relative z-10 flex items-center justify-center">
                   Learn More
-                </button>
+                </Link>
               </div>
             </div>
             
